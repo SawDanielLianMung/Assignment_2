@@ -14,3 +14,9 @@ class Laboratory:
         self.potions = []
         self.herbs = []
         self.catalysts = []
+
+class Reagent:
+     def __init__(self, name, potency):
+          self.name = name
+          self.potency = potency
+          
