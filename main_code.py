@@ -19,4 +19,8 @@ class Reagent:
      def __init__(self, name, potency):
           self.name = name
           self.potency = potency
-          
+    
+class Herb(Reagent):
+     def refine(self):
+          self.potency *= 2.5
+          print(f"{self.name} has been refined.")
