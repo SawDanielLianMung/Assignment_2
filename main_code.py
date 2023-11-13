@@ -24,3 +24,8 @@ class Herb(Reagent):
      def refine(self):
           self.potency *= 2.5
           print(f"{self.name} has been refined.")
+
+class Catalyst(Reagent):
+     def __init__ (self, name, potency, quality):
+          super().__init__(name, potency)
+          self.quality = quality
