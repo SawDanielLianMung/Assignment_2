@@ -17,13 +17,24 @@ class Laboratory:
 
 class Reagent:
      def __init__(self, name, potency):
-          self.name = name
-          self.potency = potency
+        self.name = name
+        self.potency = potency
     
 class Herb(Reagent):
-     def refine(self):
-          self.potency *= 2.5
-          print(f"{self.name} has been refined.")
+    def __init__(self, name, potency):
+        super().__init__(name, potency)
+        self.grimy = True
+
+    def refine(self):
+        self.potency *= 2.5
+        self.grimy = False
+        print(f"{self.name} has been refined.")
+    
+    def getGrimy(self):
+        return self.grimy
+    
+    def setGrimy(self, grimy):
+        self.grimy = grimy
 
 class Catalyst(Reagent):
     def __init__ (self, name, potency, quality):
@@ -35,5 +46,5 @@ class Catalyst(Reagent):
             self.quality += 1.1
             print(f"{self.name} quality has been increase")
         else:
-             self.quality = 10
-             print(f"{self.name} cannot be refined.")
+            self.quality = 10
+            print(f"{self.name} cannot be refined.")
