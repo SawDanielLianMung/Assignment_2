@@ -25,7 +25,7 @@ class Alchemist:
             self.laboratory.addReagent(reagent)
 
         def refineReagent(self):
-            pass
+            self.laboratory.refineReagents()
 
 
 class Laboratory:
@@ -33,6 +33,15 @@ class Laboratory:
         self.potions = []
         self.herbs = []
         self.catalysts = []
+
+    def mixPotion(self,potion):
+        self.potions.append(potion)
+
+    def addReagent(self, reagent):
+        pass
+
+    def refineReagents(self):
+        pass
 
 class Reagent:
      def __init__(self, name, potency):
