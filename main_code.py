@@ -9,6 +9,25 @@ class Alchemist:
             self.laboratory = Laboratory()
             self.recipes = {}
 
+        def getLaboratory(self):
+            return self.laboratory
+        
+        def getRecipe(self):
+            return self.recipes
+        
+        def mixPotion(self,potion):
+            self.laboratory.mixPotion(potion)
+
+        def drinkPotion(self, potion):
+            pass
+
+        def collectReagent(self, reagent):
+            self.laboratory.addReagent(reagent)
+
+        def refineReagent(self):
+            pass
+
+
 class Laboratory:
     def __init__(self):
         self.potions = []
