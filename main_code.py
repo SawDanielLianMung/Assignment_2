@@ -50,6 +50,16 @@ class Laboratory:
         for catalyst in self.catalysts:
             catalyst.refine()
 
+class Potion:
+    def __init__(self, name, stat, boost):
+        self.name = name
+        self.stat = stat
+        self.boost = boost
+
+    def calculateBoost(self):
+        return self.boost
+    
+
 class Reagent:
      def __init__(self, name, potency):
         self.name = name
@@ -83,3 +93,5 @@ class Catalyst(Reagent):
         else:
             self.quality = 10
             print(f"{self.name} cannot be refined.")
+
+
