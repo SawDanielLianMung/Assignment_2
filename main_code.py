@@ -1,3 +1,25 @@
+class Recipe:
+    recipes = {
+        "Super Attack": ("Irir", "Eye of Newt"), 
+        "Super Strength:": ("Kwuarm", "Limpwurt Root"),
+        "Super Defence":("Cadantine", "White Berries"),
+        "Super Magic": ("Lantadyme", "POtatoCactus"),
+        "Super Ranging": ("Dwarf Weed", "Wine of Zamorak"),
+        "Super Necromancy": ("Arbuck", "Blood of Orcus"),
+        "Extreme Attack": ("Avantoe", "Super Attack"),
+        "Extreme Strength": ("Dwarf Weed", "Super Strength"),
+        "Extreme Defence": ("Lantadyme", "Super Defence"),
+        "Extreme Magic": ("Fround Mud Rune", "Super Magic"),
+        "Extreme Ranging": ("Grenwall Spike", "Super Ranging"),
+        "Extreme Necromancy": ("Ground Miasma Rune", "Super Necromancy"),
+    }
+
+    def __init__(self, name):
+        self.name = name
+    
+    def get_recipe(self):
+        return Recipe.recipes.get(self.name, None)
+
 class Alchemist:
         def __init__(self, attack, strength, defense, magic, ranged, necromancy):
             self.attack = attack
@@ -7,13 +29,13 @@ class Alchemist:
             self.ranged = ranged
             self.necromancy = necromancy
             self.laboratory = Laboratory()
-            self.recipes = {}
+            self.recipes = Recipe.recipes
 
         def getLaboratory(self):
             return self.laboratory
         
         def getRecipe(self):
-            return self.recipes
+            
         
         def mixPotion(self,potion):
             self.laboratory.mixPotion(potion)
@@ -58,6 +80,18 @@ class Potion:
 
     def calculateBoost(self):
         return self.boost
+    
+    def getName(self):
+        return self.name
+    
+    def getStat(self):
+        return self.stat
+    
+    def getBoost(self):
+        return self.boost
+    
+    def setBoost(self, boost):
+        self.boost = boost
     
 
 class Reagent:
