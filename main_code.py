@@ -34,8 +34,16 @@ class Alchemist:
         def getLaboratory(self):
             return self.laboratory
         
-        def getRecipe(self):
-            
+        def getRecipe(self, potion_name):
+            recipe = Recipe(potion_name).get_recipe()
+            if recipe:
+                return{
+                    "name": potion_name,
+                    "first_ingredient": recipe[0],
+                    "second_ingredient": recipe[1],
+                }
+            else:
+                return None
         
         def mixPotion(self,potion):
             self.laboratory.mixPotion(potion)
