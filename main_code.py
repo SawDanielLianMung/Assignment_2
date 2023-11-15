@@ -38,10 +38,17 @@ class Laboratory:
         self.potions.append(potion)
 
     def addReagent(self, reagent):
-        pass
+        if isinstance(reagent, Herb):
+            self.herbs.append(reagent)
+        elif isinstance(reagent, Catalyst):
+            self.catalysts.append(reagent)
 
     def refineReagents(self):
-        pass
+        for herb in self.herbs:
+            herb.refine()
+        
+        for catalyst in self.catalysts:
+            catalyst.refine()
 
 class Reagent:
      def __init__(self, name, potency):
