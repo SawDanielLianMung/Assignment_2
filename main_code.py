@@ -133,7 +133,7 @@ class Alchemist:
                     self.ranged += boost
                 elif stat == "necromancy":
                     self.necromancy += boost
-                return f"Drank{potion.getName()}. {stat.capitalize()} increased by {boost}."
+                return f"Drank {potion.getName()}. {stat.capitalize()} increased by {boost}."
             return "Invalid potion."
 
         def collectReagent(self, reagent, amount):
