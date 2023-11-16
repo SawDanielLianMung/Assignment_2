@@ -1,7 +1,7 @@
 class Recipe:
     recipes = {
-        "Super Attack": ("Irir", "Eye of Newt"), 
-        "Super Strength:": ("Kwuarm", "Limpwurt Root"),
+        "Super Attack": ("Irit", "Eye of Newt"), 
+        "Super Strength": ("Kwuarm", "Limpwurt Root"),
         "Super Defence":("Cadantine", "White Berries"),
         "Super Magic": ("Lantadyme", "POtatoCactus"),
         "Super Ranging": ("Dwarf Weed", "Wine of Zamorak"),
@@ -14,11 +14,11 @@ class Recipe:
         "Extreme Necromancy": ("Ground Miasma Rune", "Super Necromancy"),
     }
 
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
+        pass
     
-    def get_recipe(self):
-        return Recipe.recipes.get(self.name, None)
+    def get_recipe(self, name):
+        return Recipe.recipes.get(name, None)
 
 class Alchemist:
         def __init__(self, attack, strength, defense, magic, ranged, necromancy):
@@ -29,33 +29,46 @@ class Alchemist:
             self.ranged = ranged
             self.necromancy = necromancy
             self.laboratory = Laboratory()
-            self.recipes = Recipe.recipes
+            self.recipes = Recipe()
 
         def getLaboratory(self):
             return self.laboratory
         
-        def getRecipe(self, potion_name):
-            recipe = Recipe(potion_name).get_recipe()
-            if recipe:
-                return{
-                    "name": potion_name,
-                    "first_ingredient": recipe[0],
-                    "second_ingredient": recipe[1],
-                }
-            else:
-                return None
+        def getRecipe(self, potionName):
+            return self.recipes.get_recipe(potionName)
         
-        def mixPotion(self,potion):
-            self.laboratory.mixPotion(potion)
+        def mixPotion(self,potionName):
+            recipe = self.getRecipe(potionName)
+            if recipe:
+                primaryIngredient, secondaryIngredient = recipe
+                return self.laboratory.mixPotion(potionName, "Super", "Attack", primaryIngredient, secondaryIngredient)
+            return "Recipe not found."
 
         def drinkPotion(self, potion):
-            pass
+            if isinstance(potion, Potion):
+                stat = potion.getStat()
+                boost = potion.getBoost()
 
-        def collectReagent(self, reagent):
-            self.laboratory.addReagent(reagent)
+                if stat == "attack":
+                    self.attack += boost
+                elif stat == "strength":
+                    self.strength += boost
+                elif stat == "defence":
+                    self.defense += boost
+                elif stat == "magic":
+                    self.magic += boost
+                elif stat == "ranged":
+                    self.ranged += boost
+                elif stat == "necromancy":
+                    self.necromancy += boost
+                return f"Drank{potion.getName()}. {stat.capitalize()} increased by {boost}."
+            return "Invaid potion."
+
+        def collectReagent(self, reagent, amount):
+            return self.laboratory.addReagent(reagent, amount)
 
         def refineReagent(self):
-            self.laboratory.refineReagents()
+            return self.laboratory.refineReagents()
 
 
 class Laboratory:
@@ -64,21 +77,48 @@ class Laboratory:
         self.herbs = []
         self.catalysts = []
 
-    def mixPotion(self,potion):
-        self.potions.append(potion)
-
-    def addReagent(self, reagent):
-        if isinstance(reagent, Herb):
-            self.herbs.append(reagent)
-        elif isinstance(reagent, Catalyst):
-            self.catalysts.append(reagent)
-
-    def refineReagents(self):
-        for herb in self.herbs:
-            herb.refine()
+    def mixPotion(self,potionName, potionType, stat, primaryIngredient, secondaryIngredient):
+        primarySource = None
+        for reagent in self.herbs + self.catalysts:
+            if reagent.name == primaryIngredient:
+                primarySource = reagent
+                break
         
-        for catalyst in self.catalysts:
-            catalyst.refine()
+        secondarySource = None
+        for potion in self.potions:
+            if potion.name == secondaryIngredient:
+                secondarySource = potion
+                break
+        
+        if potionType == "Super" and isinstance(primarySource, Herb) and isinstance(secondarySource, Catalyst):
+            superPotion = SuperPotion(potionName, stat, 0.0, primarySource, secondarySource)
+            superPotion.calculateBoost()
+            self.potions.append(superPotion)
+            return f"{potionName} mixed successfully."
+        
+        elif potionType == "Extreme" and isinstance (primarySource, (Herb,Catalyst)) and isinstance(secondarySource, SuperPotion):
+            extremePotion = ExtremePotion(potionName, stat, 0.0, primarySource, secondarySource)
+            extremePotion.calculateBoost()
+            self.potions.append(extremePotion)
+            return f"{potionName} mixed successfully."
+        
+        return "Failed to mix potions. Check if ingredients are correct."
+    
+    def addReagent(self, reagent, amount):
+        for _ in range(amount):
+            if isinstance(reagent, Herb):
+                self.herbs.append(reagent)
+            elif isinstance(reagent, Catalyst):
+                self.catalysts.append(reagent)
+            else:
+                return "Invalid reagent type."
+        return f"{amount} {reagent.name}(s) added to the laboratory. "
+    
+    def refineReagent(self):
+        for reagent in self.herbs:
+            reagent.refine()
+        for reagent in self.catalysts:
+            reagent.refine()
 
 class Potion:
     def __init__(self, name, stat, boost):
@@ -100,22 +140,68 @@ class Potion:
     
     def setBoost(self, boost):
         self.boost = boost
+
+class SuperPotion(Potion):
+    def __init__(self, name, stat, boost, herb, catalyst):
+        super().__init__(name, stat, boost)
+        self.herb = herb
+        self.catalyst = catalyst
     
+    def calculateBoost(self):
+        boost = int((self.herb.potency + (self.catalyst.potency * self.catalyst.quality)* 1.5)*100 + 0.5) / 100.0
+        self.boost = boost
+
+    def getHerb(self):
+        return self.herb
+    
+    def getCatalyst(self):
+        return self.catalyst
+    
+class ExtremePotion(Potion):
+    def __init__(self, name, stat, boost, reagent, superPotion):
+        super().__init__(name, stat, boost)
+        self.reagent = reagent
+        self.superPotion = superPotion
+    
+    def calculateBoost(self):
+        boost = int((self.reagent.potency * self.superPotion.calculateBoost()) * 300 + 0.5) / 100.0
+        self.boost = boost
+
+    def getReagent(self):
+        return self.reagent
+    
+    def getsuperPotion(self):
+        return self.superPotion
+
 
 class Reagent:
-     def __init__(self, name, potency):
+    def __init__(self, name, potency):
         self.name = name
         self.potency = potency
     
+    def refine(self):
+        pass
+
+    def getName(self):
+        return self.name
+    
+    def getPotency(self):
+        return self.potency
+    
+    def setPotency(self, potency):
+        self.potency = potency
+
+    
 class Herb(Reagent):
-    def __init__(self, name, potency):
+    def __init__(self, name, potency, grimy = True):
         super().__init__(name, potency)
-        self.grimy = True
+        self.grimy = grimy
 
     def refine(self):
-        self.potency *= 2.5
-        self.grimy = False
-        print(f"{self.name} has been refined.")
+        if self.grimy:
+            self.grimy = False
+            self.potency *= 2.5
+            print(f"{self.name} has been refined.")
     
     def getGrimy(self):
         return self.grimy
@@ -136,4 +222,12 @@ class Catalyst(Reagent):
             self.quality = 10
             print(f"{self.name} cannot be refined.")
 
+alchemist = Alchemist(80, 90, 70, 75, 74, 85)
+herb = Herb("Irit", 1.0)
+catalyst = Catalyst("Eye of Newt", 4.3, 1.0)
+alchemist.laboratory.addReagent(herb, 3)
+alchemist.laboratory.addReagent(catalyst, 5)
+potion_name = "Super Attack"
+result = alchemist.mixPotion(potion_name)
+print(result)
 
