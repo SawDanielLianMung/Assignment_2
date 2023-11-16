@@ -17,8 +17,9 @@ class Recipe:
     def __init__(self):
         pass
     
-    def get_recipe(self, name):
-        return Recipe.recipes.get(name, None)
+    @classmethod
+    def get_recipe(cls, name):
+        return cls.recipes.get(name, None)
 
 class Alchemist:
         def __init__(self, attack, strength, defense, magic, ranged, necromancy):
@@ -37,11 +38,10 @@ class Alchemist:
         def getRecipe(self, potionName):
             return self.recipes.get_recipe(potionName)
         
-        def mixPotion(self,potionName):
-            recipe = self.getRecipe(potionName)
+        def mixPotion(self,potionName, potionType, stat, primaryIngredient, secondaryIngredient):
+            recipe = self.recipes.get_recipe(potionName)
             if recipe:
-                primaryIngredient, secondaryIngredient = recipe
-                return self.laboratory.mixPotion(potionName, "Super", "Attack", primaryIngredient, secondaryIngredient)
+                return self.laboratory.mixPotion(potionName, potionType, stat, primaryIngredient, secondaryIngredient)
             return "Recipe not found."
 
         def drinkPotion(self, potion):
@@ -77,7 +77,7 @@ class Laboratory:
         self.herbs = []
         self.catalysts = []
 
-    def mixPotion(self,potionName, potionType, stat, primaryIngredient, secondaryIngredient):
+    def mixPotion(self, potionName, potionType, stat, primaryIngredient, secondaryIngredient):
         primarySource = None
         for reagent in self.herbs + self.catalysts:
             if reagent.name == primaryIngredient:
@@ -164,7 +164,7 @@ class ExtremePotion(Potion):
         self.superPotion = superPotion
     
     def calculateBoost(self):
-        boost = int((self.reagent.potency * self.superPotion.calculateBoost()) * 300 + 0.5) / 100.0
+        boost = int((self.reagent.potency * self.superPotion.boost) * 300 + 0.5) / 100.0
         self.boost = boost
 
     def getReagent(self):
@@ -223,11 +223,17 @@ class Catalyst(Reagent):
             print(f"{self.name} cannot be refined.")
 
 alchemist = Alchemist(80, 90, 70, 75, 74, 85)
-herb = Herb("Irit", 1.0)
-catalyst = Catalyst("Eye of Newt", 4.3, 1.0)
-alchemist.laboratory.addReagent(herb, 3)
-alchemist.laboratory.addReagent(catalyst, 5)
+irit = Herb("Irit", 1.0)
+eye_of_newt = Catalyst("Eye of Newt", 4.3, 1.0)
+alchemist.laboratory.addReagent(irit, 3)
+alchemist.laboratory.addReagent(eye_of_newt, 5)
+
+alchemist.laboratory.addReagent(irit, 3)
+alchemist.laboratory.addReagent(eye_of_newt, 5)
 potion_name = "Super Attack"
-result = alchemist.mixPotion(potion_name)
+result = alchemist.mixPotion(potion_name,"Super", "Attack", "Irit", "Eye of Newt")
 print(result)
+
+print(f"Laboratory state: \n Herbs: {alchemist.laboratory.herbs} \n Catalysts: {alchemist.laboratory.catalysts} \n Potions: {alchemist.laboratory.potions}")
+
 
