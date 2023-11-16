@@ -323,8 +323,9 @@ class SuperPotion(Potion):
         '''
         Calculate the boost provided by the super potion.
         '''
-        boost = int((self.herb.potency + (self.catalyst.potency * self.catalyst.quality)* 1.5)*100 + 0.5) / 100.0
+        boost = round(self.herb.potency + (self.catalyst.potency * self.catalyst.quality)* 1.5, 2)
         self.boost = boost
+        return self.boost
 
     def getHerb(self):
         '''
