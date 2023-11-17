@@ -15,7 +15,7 @@ class Recipe:
         "Super Attack": ("Irit", "Eye of Newt"), 
         "Super Strength": ("Kwuarm", "Limpwurt Root"),
         "Super Defence":("Cadantine", "White Berries"),
-        "Super Magic": ("Lantadyme", "POtatoCactus"),
+        "Super Magic": ("Lantadyme", "PotatoCactus"),
         "Super Ranging": ("Dwarf Weed", "Wine of Zamorak"),
         "Super Necromancy": ("Arbuck", "Blood of Orcus"),
         "Extreme Attack": ("Avantoe", "Super Attack"),
