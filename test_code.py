@@ -1,3 +1,12 @@
+'''
+File: test_code.py
+Description: Testing implemented Potion-making system with classes representing an alchemist, a laboratory where he works, types of potion that he makes , reagents thatare added for refining potions along with Herb and Catalys classes.
+Author: Saw Daniel Lian Mung
+StudentID: 110408935
+EmailID: munsd004
+This is my own work as defined by the University's Academic Misconduct Policy.
+'''
+
 import unittest
 from main_code import Alchemist, Herb, Catalyst, SuperPotion
 
